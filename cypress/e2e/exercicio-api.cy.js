@@ -65,7 +65,7 @@ describe('Testes da Funcionalidade Usuários', () => {
     })
   });
 
-  it('Deve validar um usuário com email inválido', () => {
+  it('[POST] Deve validar um usuário com email inválido', () => {
     const usuario = {
       nome: faker.person.fullName(),
       email: 'emailinvalido',
@@ -84,11 +84,39 @@ describe('Testes da Funcionalidade Usuários', () => {
     })
   });
 
-  it('Deve editar um usuário previamente cadastrado', () => {
-    //TODO: 
+  it.only('[PUT] Deve editar um usuário previamente cadastrado', () => {
+    const usuarioInicial = {
+    nome: faker.person.fullName(),
+    email: faker.internet.email(),
+    password: '123456',
+    administrador: 'true'
+  };
+
+  cy.request('POST', '/usuarios', usuarioInicial).then((resCriacao) => {
+    expect(resCriacao.status).to.eq(201);
+    const idUsuario = resCriacao.body._id;
+
+    
+    const usuarioEditado = {
+      nome: 'Usuário Editado ' + faker.person.firstName(),
+      email: faker.internet.email(),
+      password: '654321',
+      administrador: 'false'
+    };
+
+    
+    cy.request({
+      method: 'PUT',
+      url: `/usuarios/${idUsuario}`,
+      body: usuarioEditado
+    }).then((resEdicao) => {
+      expect(resEdicao.status).to.eq(200);
+      expect(resEdicao.body).to.have.property('message', 'Registro alterado com sucesso');
+    });
+  });
   });
 
-  it('Deve deletar um usuário previamente cadastrado', () => {
+  it('[DELETE] Deve deletar um usuário previamente cadastrado', () => {
     //TODO: 
   });
 
