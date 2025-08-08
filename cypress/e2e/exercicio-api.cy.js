@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
+import { faker } from '@faker-js/faker';
 const Joi = require('joi');
+
 
 describe('Testes da Funcionalidade Usuários', () => {
 
@@ -29,7 +31,7 @@ describe('Testes da Funcionalidade Usuários', () => {
     });
   });
 
-  it('Deve listar usuários cadastrados', () => {
+  it('[GET] Deve listar usuários cadastrados', () => {
     
     cy.request('/usuarios').then((res) => {
       expect(res.status).to.eq(200);
@@ -41,11 +43,26 @@ describe('Testes da Funcionalidade Usuários', () => {
     
     });
   });
- 
-  });
 
-  it('Deve cadastrar um usuário com sucesso', () => {
-    //TODO: 
+  it('[POST] Deve cadastrar um usuário com sucesso', () => {
+    const nome = faker.person.fullName();
+    const email = faker.internet.email();
+    const password = '123456';
+
+    cy.request({
+      method: 'POST',
+      url: '/usuarios',
+      body: {
+        nome: nome,
+        email: email,
+        password: password,
+        administrador: 'true'
+      }
+    }).then((res) => {
+      expect(res.status).to.eq(201);
+      expect(res.body).to.have.property('message', 'Cadastro realizado com sucesso');
+      expect(res.body).to.have.property('_id');
+    })
   });
 
   it('Deve validar um usuário com email inválido', () => {
@@ -59,4 +76,6 @@ describe('Testes da Funcionalidade Usuários', () => {
   it('Deve deletar um usuário previamente cadastrado', () => {
     //TODO: 
   });
+
+});
 
