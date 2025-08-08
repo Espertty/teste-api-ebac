@@ -3,7 +3,7 @@ const Joi = require('joi');
 
 describe('Testes da Funcionalidade Usuários', () => {
 
-  it.only('[GET] Deve validar contrato de usuários', () => {
+  it('[GET] Deve validar contrato de usuários', () => {
     const schema = Joi.object({
       quantidade: Joi.number().required(),
       usuarios: Joi.array().items(
@@ -30,7 +30,18 @@ describe('Testes da Funcionalidade Usuários', () => {
   });
 
   it('Deve listar usuários cadastrados', () => {
-    //TODO: 
+    
+    cy.request('/usuarios').then((res) => {
+      expect(res.status).to.eq(200);
+
+      expect(res.body).to.have.property('usuarios');
+      expect(res.body.usuarios).to.be.an('array');
+
+      cy.log(`Quantidade de usuários: ${res.body.quantidade}`);
+    
+    });
+  });
+ 
   });
 
   it('Deve cadastrar um usuário com sucesso', () => {
@@ -49,5 +60,3 @@ describe('Testes da Funcionalidade Usuários', () => {
     //TODO: 
   });
 
-
-});
