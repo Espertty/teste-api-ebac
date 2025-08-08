@@ -66,7 +66,22 @@ describe('Testes da Funcionalidade Usuários', () => {
   });
 
   it('Deve validar um usuário com email inválido', () => {
-    //TODO: 
+    const usuario = {
+      nome: faker.person.fullName(),
+      email: 'emailinvalido',
+      password: '123456',
+      administrador: 'true'
+    };
+    
+    cy.request({
+    method: 'POST',
+    url: '/usuarios',
+    body: usuario,
+    failOnStatusCode: false
+  }).then((res) => {
+    expect(res.status).to.eq(400);
+    expect(res.body).to.have.property('email', 'email deve ser um email válido');
+    })
   });
 
   it('Deve editar um usuário previamente cadastrado', () => {
