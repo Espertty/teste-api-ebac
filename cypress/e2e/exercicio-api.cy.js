@@ -84,7 +84,7 @@ describe('Testes da Funcionalidade Usuários', () => {
     })
   });
 
-  it.only('[PUT] Deve editar um usuário previamente cadastrado', () => {
+  it('[PUT] Deve editar um usuário previamente cadastrado', () => {
     const usuarioInicial = {
     nome: faker.person.fullName(),
     email: faker.internet.email(),
@@ -117,8 +117,26 @@ describe('Testes da Funcionalidade Usuários', () => {
   });
 
   it('[DELETE] Deve deletar um usuário previamente cadastrado', () => {
-    //TODO: 
+    const usuario = {
+    nome: faker.person.fullName(),
+    email: faker.internet.email(),
+    password: '123456',
+    administrador: 'true'
+  };
+
+  cy.request('POST', '/usuarios', usuario).then((resCriacao) => {
+    expect(resCriacao.status).to.eq(201);
+    const idUsuario = resCriacao.body._id;
+
+    // 2) Requisição de exclusão (DELETE)
+    cy.request({
+      method: 'DELETE',
+      url: `/usuarios/${idUsuario}`
+    }).then((resDelete) => {
+      expect(resDelete.status).to.eq(200);
+      expect(resDelete.body).to.have.property('message', 'Registro excluído com sucesso');
+    });
   });
-
+  });
+  
 });
-
